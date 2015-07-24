@@ -6,8 +6,16 @@
 //  Copyright (c) 2015年 吴海超. All rights reserved.
 //
 
-#import "AppDelegate.h"
+/*
+ *  qq:712641411
+ *  iOS大神qq群:460122071
+ *  gitHub:https://github.com/netyouli
+ *  csdn:http://blog.csdn.net/windwhc/article/category/3117381
+ */
 
+#import "AppDelegate.h"
+#import "ViewController.h"
+#import "UIScrollView+WHC_PullRefresh.h"
 @interface AppDelegate ()
 
 @end
@@ -17,6 +25,37 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    _window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    UITabBarController  * tv = [[UITabBarController alloc]init];
+    
+    ViewController * v1 = [ViewController new];
+    v1.refreshStyle = AllStyle;
+    UINavigationController  * nv1 = [[UINavigationController alloc]initWithRootViewController:v1];
+    nv1.tabBarItem.title = @"上下拉刷新";
+    nv1.tabBarItem.image = [UIImage imageNamed:@"whc"];
+    
+    ViewController * v2 = [ViewController new];
+    v2.refreshStyle = HeaderStyle;
+    UINavigationController  * nv2 = [[UINavigationController alloc]initWithRootViewController:v2];
+    nv2.tabBarItem.title = @"下拉刷新";
+    nv2.tabBarItem.image = [UIImage imageNamed:@"whc"];
+    
+    ViewController * v3 = [ViewController new];
+    v3.refreshStyle = FooterStyle;
+    UINavigationController  * nv3 = [[UINavigationController alloc]initWithRootViewController:v3];
+    nv3.tabBarItem.title = @"上拉刷新";
+    nv3.tabBarItem.image = [UIImage imageNamed:@"whc"];
+    
+    tv.viewControllers = @[nv1,nv2,nv3];
+    _window.rootViewController = tv;
+    [_window makeKeyAndVisible];
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
+    [UINavigationBar appearance].barStyle = UIBarStyleBlack;
+    [UINavigationBar appearance].barTintColor = [UIColor colorWithRed:38.0  / 255.0
+                                                                green:110.0 / 255.0
+                                                                 blue:239.0  / 255.0
+                                                                alpha:1.0];
+    [UINavigationBar appearance].translucent = YES;
     return YES;
 }
 
