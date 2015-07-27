@@ -235,7 +235,6 @@ typedef enum{
     CGFloat  actualOffset = progressValue - showFooterOffset;
     if(actualOffset > kWHC_RefreshingHeight && _currentRefreshState == WillRefresh && _superView.isDragging){
         _currentRefreshState = DoingRefresh;
-        [self sendUpRefreshCommand];
     }else if(_superView.isDragging){
         if(self.hidden){
             self.hidden = NO;
@@ -267,6 +266,9 @@ typedef enum{
         default:
             break;
     }
+    if(_superView.isDragging && _currentRefreshState == DoingRefresh){
+        [self sendUpRefreshCommand];
+    }
     
 }
 
@@ -280,6 +282,7 @@ typedef enum{
 @property (nonatomic , assign)BOOL                    isCloseHeader;              //是否关闭头
 @property (nonatomic , assign)UIEdgeInsets            superOriginalContentInset;  //super原始偏移值
 - (void)setProgressValue:(CGFloat)progressValue;
+- (void)setProgressBarEndDragPostion;
 @end
 
 @interface WHC_PullHeaderView (){
@@ -450,36 +453,34 @@ typedef enum{
                     _currentRadius = kWHC_BreakRadius;
                     _currentRefreshState = DoingRefresh;
                     _backView.centerY = kWHC_WaterDropSize / 2.0;
-                    
-                    if(_superView.isDragging && _currentRefreshState == DoingRefresh){
-                        [self sendDownRefreshCommand];
-                    }
                 }
+                
             }
             [self updateProgressBarWithValue:absActualOffset];
             [self setNeedsDisplay];
-        }else{
-            _currentRadius = kWHC_WaterDropSize / 2.0;
-            _backView.centerY = self.height - kWHC_WaterDropSize / 2.0;
-        }
-        switch (_currentRefreshState) {
-            case NoneRefresh:
-            case WillRefresh:
-                if(![self.subviews containsObject:_backView]){
-                    [self addSubview:_backView];
+            
+            switch (_currentRefreshState) {
+                case NoneRefresh:
+                case WillRefresh:
+                    if(![self.subviews containsObject:_backView]){
+                        [self addSubview:_backView];
+                    }
+                    break;
+                case DoingRefresh:{
+                    if([self.subviews containsObject:_backView]){
+                        [_backView removeFromSuperview];
+                        [self setImageProgressBarAnimation];
+                    }
                 }
-                break;
-            case DoingRefresh:{
-                if([self.subviews containsObject:_backView]){
-                    [_backView removeFromSuperview];
-                    [self setImageProgressBarAnimation];
-                }
+                    break;
+                case DidRefreshed:
+                    break;
+                default:
+                    break;
             }
-                break;
-            case DidRefreshed:
-                break;
-            default:
-                break;
+            if(_superView.isDragging && _currentRefreshState == DoingRefresh){
+                [self sendDownRefreshCommand];
+            }
         }
     }
 }
@@ -494,8 +495,7 @@ typedef enum{
 - (void)setDownRefreshDidFinished{
     _currentRefreshState = DidRefreshed;
     _isDidRefresh = YES;
-    if(_currentRefreshState == DidRefreshed &&
-       [self.subviews containsObject:_progressBarImageView]){
+    if([self.subviews containsObject:_progressBarImageView]){
         _refreshAlertLab.centerY = _progressBarImageView.centerY;
         [_progressBarImageView removeFromSuperview];
         [self addSubview:_refreshAlertLab];
@@ -529,7 +529,14 @@ typedef enum{
     [self setNeedsDisplay];
 }
 
+- (void)setProgressBarEndDragPostion{
+    _progressBarImageView.centerY = self.height - kWHC_RefreshingHeight / 2.0;
+}
+
 - (void)sendDownRefreshCommand{
+    if(![self.subviews containsObject:_progressBarImageView]){
+        [self addSubview:_progressBarImageView];
+    }
     _progressBarImageView.centerY = self.height - kWHC_RefreshingHeight / 2.0;
     if(!_isDidSendRequest){
         _isDidSendRequest = YES;
@@ -637,7 +644,7 @@ const char WHCFooterMask = '9';
         WHC_PullHeaderView  * headerView = [self getHeaderView];
         if(headerView){
             [headerView setDownRefreshDidFinished];
-            double delayInSeconds = 1.0;
+            double delayInSeconds = .3;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                 [UIView animateWithDuration:kWHC_OffsetAnimationTime delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -716,9 +723,7 @@ const char WHCFooterMask = '9';
                 [UIView animateWithDuration:kWHC_OffsetAnimationTime delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
                     sf.contentInset = UIEdgeInsetsMake(footerView.superOriginalContentInset.top, 0, kWHC_RefreshingHeight + footerView.superOriginalContentInset.bottom, 0);
                 } completion:nil];
-            }else if (footerView.currentRefreshState != DidRefreshed && !footerView.isSetOffset){
-                [footerView resetUpRefreshState];
-            }else if (footerView.currentRefreshState == DidRefreshed){
+            }else if (!footerView.isSetOffset){
                 [footerView resetUpRefreshState];
             }
         }
@@ -729,7 +734,7 @@ const char WHCFooterMask = '9';
                 if(!headerView.isCloseHeader){
                     sf.contentInset = UIEdgeInsetsMake(kWHC_RefreshingHeight + headerView.superOriginalContentInset.top, 0, headerView.superOriginalContentInset.bottom, 0);
                 }
-                [headerView sendDownRefreshCommand];
+                [headerView setProgressBarEndDragPostion];
             }else if(headerView.currentRefreshState != DidRefreshed){
                 [headerView resetDownRefreshState];
             }

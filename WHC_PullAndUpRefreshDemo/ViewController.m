@@ -50,19 +50,19 @@
     double delayInSeconds = 2.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [_whcTV WHCDidCompletedWithRefreshIsDownPull:NO];
         [_whcTV reloadData];
+        [_whcTV WHCDidCompletedWithRefreshIsDownPull:NO];
     });
 }
 
 - (void)WHCDownPullRequest{
-    NSLog(@"开始请求数据");
+    NSLog(@"上拉刷新");
     double delayInSeconds = 3.0;
     _count+= 3;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [_whcTV WHCDidCompletedWithRefreshIsDownPull:YES];
         [_whcTV reloadData];
+        [_whcTV WHCDidCompletedWithRefreshIsDownPull:YES];
     });
 }
 
