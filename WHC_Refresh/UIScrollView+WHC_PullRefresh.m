@@ -280,6 +280,7 @@ typedef enum{
 @property (nonatomic , assign)CGFloat                 defualtOffset;              //默认偏移
 @property (nonatomic , assign)WHCRefreshStatus        currentRefreshState;        //当前刷新状态
 @property (nonatomic , assign)BOOL                    isCloseHeader;              //是否关闭头
+@property (nonatomic , assign)BOOL                    isRequestEndNOInit;         //请求结束但没有初始化
 @property (nonatomic , assign)UIEdgeInsets            superOriginalContentInset;  //super原始偏移值
 - (void)setProgressValue:(CGFloat)progressValue;
 - (void)setProgressBarEndDragPostion;
@@ -519,6 +520,7 @@ typedef enum{
     if(![self.subviews containsObject:_backView]){
         [self addSubview:_backView];
     }
+    _isRequestEndNOInit = NO;
     _isDidSendRequest = NO;
     _backView.centerY = self.height - kWHC_WaterDropSize / 2.0;
     if(_currentRefreshState == WillRefresh){
@@ -553,14 +555,16 @@ typedef enum{
     if(_isBreak && (_currentRefreshState == DoingRefresh || _currentRefreshState == DidRefreshed)){
         return;
     }
-    CGPoint  a     = CGPointMake(_backView.x , _backView.centerY),
-             b     = CGPointMake(_backView.maxX , _backView.centerY),
-             c     = CGPointMake(_backView.centerX + _currentRadius , self.height - _currentRadius),
-             d     = CGPointMake(_backView.centerX - _currentRadius , self.height - _currentRadius),
+    CGPoint  a     = CGPointMake(_backView.x + 0.5, _backView.centerY),
+             b     = CGPointMake(_backView.maxX - 0.5, _backView.centerY),
+             c     = CGPointMake(_backView.centerX + _currentRadius - 0.5, self.height - _currentRadius),
+             d     = CGPointMake(_backView.centerX - _currentRadius + 0.5, self.height - _currentRadius),
              ctr1  = CGPointMake(d.x, d.y - (self.height - _currentRadius - _backView.centerY) / 2.0),
              ctr2  = CGPointMake(c.x, c.y - (self.height - _currentRadius - _backView.centerY) / 2.0);
     
     UIBezierPath * bezierPath = [UIBezierPath bezierPath];
+    bezierPath.lineJoinStyle = kCGLineJoinRound;
+    bezierPath.lineCapStyle = kCGLineCapRound;
     [bezierPath moveToPoint:a];
     [bezierPath addQuadCurveToPoint:d controlPoint:ctr1];
     [bezierPath addLineToPoint:c];
@@ -573,7 +577,7 @@ typedef enum{
     CGContextSetFillColorWithColor(context, kWHC_WaterBackColor);
     CGContextSetLineWidth(context, 1.0);
     if(_backView.hidden == NO){
-        CGContextAddArc(context, d.x + _currentRadius, d.y, _currentRadius - 0.5, 0, M_PI * 2.0, NO);
+        CGContextAddArc(context, d.x + _currentRadius - 0.5, d.y, _currentRadius - 0.5, 0, M_PI * 2.0, NO);
         CGContextDrawPath(context, kCGPathFillStroke);
         
         CGContextAddPath(context, bezierPath.CGPath);
@@ -653,7 +657,11 @@ const char WHCFooterMask = '9';
                 [UIView animateWithDuration:kWHC_OffsetAnimationTime delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
                     sf.contentInset = UIEdgeInsetsMake(headerView.superOriginalContentInset.top, 0, headerView.superOriginalContentInset.bottom, 0);
                 } completion:^(BOOL finished) {
-                    [headerView resetDownRefreshState];
+                    if(!self.isDragging){
+                        [headerView resetDownRefreshState];
+                    }else{
+                        headerView.isRequestEndNOInit = YES;
+                    }
                 }];
             });
         }
@@ -738,7 +746,8 @@ const char WHCFooterMask = '9';
                     sf.contentInset = UIEdgeInsetsMake(kWHC_RefreshingHeight + headerView.superOriginalContentInset.top, 0, headerView.superOriginalContentInset.bottom, 0);
                 }
                 [headerView setProgressBarEndDragPostion];
-            }else if(headerView.currentRefreshState != DidRefreshed){
+//            }[headerView resetDownRefreshState];
+            }else if(headerView.currentRefreshState != DidRefreshed || headerView.isRequestEndNOInit){
                 [headerView resetDownRefreshState];
             }
         }
