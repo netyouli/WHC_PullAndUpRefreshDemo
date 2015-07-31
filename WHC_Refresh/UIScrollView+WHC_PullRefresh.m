@@ -387,7 +387,7 @@ typedef enum{
     }
     CGMutablePathRef  path = CGPathCreateMutable();
     CGPathAddArc(path, NULL,
-                 _progressBar.frame.size.width / 2.0, _progressBar.frame.size.height / 2.0, kWHC_WaterDropSize / 2.0 - 3.0, M_PI / 2.0, endAngle * M_PI * 2.0 + M_PI / 2.0, NO);
+                 _progressBar.frame.size.width / 2.0, _progressBar.frame.size.height / 2.0, kWHC_WaterDropSize / 2.0 - 2.5, M_PI / 2.0, endAngle * M_PI * 2.0 + M_PI / 2.0, NO);
     _progressBar.path = path;
     CGPathRelease(path);
     _percentLab.text = [NSString stringWithFormat:@"%.0f",endAngle * 100.0];
@@ -425,23 +425,26 @@ typedef enum{
     CGFloat   absActualOffset = -actualOffset;
     if(!_superView.isDragging){
         if(_currentRefreshState == WillRefresh || _currentRefreshState == NoneRefresh){
-            if(absActualOffset > kWHC_WaterDropSize && absActualOffset <= kWHC_PullHeight){
-                _backView.centerY = self.height - (absActualOffset - kWHC_WaterDropSize) - kWHC_WaterDropSize / 2.0;
-                _currentRadius = (1.0 - (absActualOffset - kWHC_WaterDropSize) / kWHC_PullHeight) * kWHC_WaterDropSize / 2.0;
+            if(absActualOffset > kWHC_RefreshingHeight && absActualOffset <= kWHC_PullHeight){
+                _backView.centerY = self.height - (absActualOffset - kWHC_RefreshingHeight) - kWHC_WaterDropSize / 2.0;
+                _currentRadius = (1.0 - (absActualOffset - kWHC_RefreshingHeight) / (kWHC_PullHeight - kWHC_Margin)) * kWHC_WaterDropSize / 2.0;
+            }else{
+                _currentRadius = kWHC_WaterDropSize / 2.0;
+                _backView.centerY = self.height - kWHC_WaterDropSize / 2.0;
             }
-            [self updateProgressBarWithValue:absActualOffset];
-            [self setNeedsDisplay];
         }
+        [self updateProgressBarWithValue:absActualOffset];
+        [self setNeedsDisplay];
     }else{
         if(actualOffset < 0 && _currentRefreshState != DoingRefresh && _currentRefreshState != DidRefreshed){
             if(_backView.hidden){
                 _backView.hidden = NO;
             }
-            if(absActualOffset > kWHC_WaterDropSize){
+            if(absActualOffset > kWHC_RefreshingHeight){
                 if(absActualOffset <= kWHC_PullHeight){
                     _isBreak = NO;
-                    _backView.centerY = self.height - (absActualOffset - kWHC_WaterDropSize) - kWHC_WaterDropSize / 2.0;
-                    _currentRadius = (1.0 - (absActualOffset - kWHC_WaterDropSize) / kWHC_PullHeight) * kWHC_WaterDropSize / 2.0;
+                    _backView.centerY = self.height - (absActualOffset - kWHC_RefreshingHeight) - kWHC_WaterDropSize / 2.0;
+                    _currentRadius = (1.0 - (absActualOffset - kWHC_RefreshingHeight) / (kWHC_PullHeight - kWHC_Margin)) * kWHC_WaterDropSize / 2.0;
                     _currentRefreshState = WillRefresh;
                     if(_currentRadius < kWHC_BreakRadius){
                         _isBreak = YES;
@@ -452,7 +455,7 @@ typedef enum{
                     _isBreak = YES;
                     _currentRadius = kWHC_BreakRadius;
                     _currentRefreshState = DoingRefresh;
-                    _backView.centerY = kWHC_WaterDropSize / 2.0;
+                    _backView.centerY = kWHC_RefreshingHeight / 2.0;
                 }
                 
             }
@@ -550,8 +553,8 @@ typedef enum{
     if(_isBreak && (_currentRefreshState == DoingRefresh || _currentRefreshState == DidRefreshed)){
         return;
     }
-    CGPoint  a     = CGPointMake(_backView.x + 1, _backView.centerY),
-             b     = CGPointMake(_backView.maxX - 1, _backView.centerY),
+    CGPoint  a     = CGPointMake(_backView.x , _backView.centerY),
+             b     = CGPointMake(_backView.maxX , _backView.centerY),
              c     = CGPointMake(_backView.centerX + _currentRadius , self.height - _currentRadius),
              d     = CGPointMake(_backView.centerX - _currentRadius , self.height - _currentRadius),
              ctr1  = CGPointMake(d.x, d.y - (self.height - _currentRadius - _backView.centerY) / 2.0),
@@ -570,7 +573,7 @@ typedef enum{
     CGContextSetFillColorWithColor(context, kWHC_WaterBackColor);
     CGContextSetLineWidth(context, 1.0);
     if(_backView.hidden == NO){
-        CGContextAddArc(context, d.x + _currentRadius, d.y - 1, _currentRadius , 0, M_PI * 2.0, NO);
+        CGContextAddArc(context, d.x + _currentRadius, d.y, _currentRadius - 0.5, 0, M_PI * 2.0, NO);
         CGContextDrawPath(context, kCGPathFillStroke);
         
         CGContextAddPath(context, bezierPath.CGPath);
