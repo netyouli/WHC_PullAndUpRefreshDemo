@@ -712,12 +712,18 @@ const char WHCFooterMask = '9';
                 }
             }
         }
+        if(footerView && footerView.currentRefreshState == DidRefreshed){
+            [footerView resetUpRefreshState];
+        }
         [headerView setProgressValue:contentOffset.y];
     }else{
         if(!self.isDragging){
             [self scrollViewDidEndDraggingWithwillDecelerate:YES isUp:YES];
         }
         
+        if(headerView && headerView.currentRefreshState == DidRefreshed){
+            [headerView resetDownRefreshState];
+        }
         if(footerView){
             [footerView setProgressValue:contentOffset.y];
         }
