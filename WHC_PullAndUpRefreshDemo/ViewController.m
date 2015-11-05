@@ -27,7 +27,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationItem.title = @"XXX";
+    self.navigationItem.title = @"WHC";
     [self initData];
     [_whcTV setWHCRefreshStyle:_refreshStyle delegate:self];
     // Do any additional setup after loading the view, typically from a nib.
@@ -88,7 +88,7 @@
     }
     cell.textLabel.textColor = [UIColor redColor];
     cell.textLabel.font = [UIFont boldSystemFontOfSize:18];
-    cell.textLabel.text = @"whc->iOS技术大牛群：460122071";
+    cell.textLabel.text = @"WHCPullRefreshDemo";
     return cell;
 }
 
