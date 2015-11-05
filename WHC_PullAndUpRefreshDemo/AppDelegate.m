@@ -33,18 +33,21 @@
     UINavigationController  * nv1 = [[UINavigationController alloc]initWithRootViewController:v1];
     nv1.tabBarItem.title = @"上下拉刷新";
     nv1.tabBarItem.image = [UIImage imageNamed:@"whc"];
+    nv1.tabBarItem.imageInsets = UIEdgeInsetsMake(8, 8, 8, 8);
     
     ViewController * v2 = [ViewController new];
     v2.refreshStyle = HeaderStyle;
     UINavigationController  * nv2 = [[UINavigationController alloc]initWithRootViewController:v2];
     nv2.tabBarItem.title = @"下拉刷新";
     nv2.tabBarItem.image = [UIImage imageNamed:@"whc"];
+    nv2.tabBarItem.imageInsets = UIEdgeInsetsMake(8, 8, 8, 8);
     
     ViewController * v3 = [ViewController new];
     v3.refreshStyle = FooterStyle;
     UINavigationController  * nv3 = [[UINavigationController alloc]initWithRootViewController:v3];
     nv3.tabBarItem.title = @"上拉刷新";
     nv3.tabBarItem.image = [UIImage imageNamed:@"whc"];
+    nv3.tabBarItem.imageInsets = UIEdgeInsetsMake(8, 8, 8, 8);
     
     tv.viewControllers = @[nv1,nv2,nv3];
     _window.rootViewController = tv;

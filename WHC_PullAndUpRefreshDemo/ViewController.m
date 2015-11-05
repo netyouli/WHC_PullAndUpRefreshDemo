@@ -89,6 +89,7 @@
     cell.textLabel.textColor = [UIColor redColor];
     cell.textLabel.font = [UIFont boldSystemFontOfSize:18];
     cell.textLabel.text = @"WHCPullRefreshDemo";
+    cell.textLabel.textAlignment = NSTextAlignmentCenter;
     return cell;
 }
 

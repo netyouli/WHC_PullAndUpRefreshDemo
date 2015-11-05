@@ -15,8 +15,8 @@
 		C3D721461B622B9100A3DD85 /* UIScrollView+WHC_PullRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D721431B622B9100A3DD85 /* UIScrollView+WHC_PullRefresh.m */; };
 		C3D721471B622B9100A3DD85 /* UIView+WHC_ViewProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D721451B622B9100A3DD85 /* UIView+WHC_ViewProperty.m */; };
 		C3D721491B622C2000A3DD85 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3D721481B622C2000A3DD85 /* ViewController.xib */; };
-		C3D7214B1B6233F600A3DD85 /* whc.pdf in Resources */ = {isa = PBXBuildFile; fileRef = C3D7214A1B6233F600A3DD85 /* whc.pdf */; };
 		C3D7214D1B6235EC00A3DD85 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = C3D7214C1B6235EC00A3DD85 /* README.md */; };
+		C3F00E141BEAE8160092521A /* whc.png in Resources */ = {isa = PBXBuildFile; fileRef = C3F00E131BEAE8160092521A /* whc.png */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,8 +46,8 @@
 		C3D721441B622B9100A3DD85 /* UIView+WHC_ViewProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WHC_ViewProperty.h"; sourceTree = "<group>"; };
 		C3D721451B622B9100A3DD85 /* UIView+WHC_ViewProperty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WHC_ViewProperty.m"; sourceTree = "<group>"; };
 		C3D721481B622C2000A3DD85 /* ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ViewController.xib; sourceTree = "<group>"; };
-		C3D7214A1B6233F600A3DD85 /* whc.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = whc.pdf; sourceTree = "<group>"; };
 		C3D7214C1B6235EC00A3DD85 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		C3F00E131BEAE8160092521A /* whc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whc.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,7 +91,7 @@
 		C3D7211A1B622B2D00A3DD85 /* WHC_PullAndUpRefreshDemo */ = {
 			isa = PBXGroup;
 			children = (
-				C3D7214A1B6233F600A3DD85 /* whc.pdf */,
+				C3F00E131BEAE8160092521A /* whc.png */,
 				C3D7211F1B622B2D00A3DD85 /* AppDelegate.h */,
 				C3D721201B622B2D00A3DD85 /* AppDelegate.m */,
 				C3D721221B622B2D00A3DD85 /* ViewController.h */,
@@ -220,8 +220,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3F00E141BEAE8160092521A /* whc.png in Resources */,
 				C3D7212C1B622B2D00A3DD85 /* LaunchScreen.xib in Resources */,
-				C3D7214B1B6233F600A3DD85 /* whc.pdf in Resources */,
 				C3D721491B622C2000A3DD85 /* ViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
