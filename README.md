@@ -5,7 +5,7 @@
 ###目前最好用的列表上拉下拉刷新效果！
 
 ##运行效果
-![](https://github.com/netyouli/WHC_PullAndUpRefreshDemo/tree/master/WHC_PullAndUpRefreshDemo/whc.gif)
+![](https://github.com/netyouli/WHC_PullAndUpRefreshDemo/blob/master/WHC_PullAndUpRefreshDemo/os.gif)
 
 ####Use Example
 ```objective-c
